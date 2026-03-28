@@ -1,0 +1,280 @@
+# OpenEnv Configuration File
+# Email Triage Environment v1.0.0
+# https://github.com/openenv/spec
+
+name: email-triage
+version: "1.0.0"
+description: |
+  Email Triage Environment - A real-world simulation for training AI agents
+  on email management tasks. Agents must categorize, prioritize, detect spam,
+  and respond to emails in a simulated inbox.
+  
+  This environment is designed for:
+  - Training LLMs on practical productivity tasks
+  - Benchmarking agent decision-making capabilities
+  - Evaluating multi-step reasoning and efficiency
+
+author: OpenEnv
+license: MIT
+repository: https://huggingface.co/spaces/openenv/email-triage
+
+tags:
+  - openenv
+  - email
+  - triage
+  - nlp
+  - classification
+  - productivity
+  - agent-training
+
+# =============================================================================
+# ENVIRONMENT SPECIFICATION
+# =============================================================================
+
+environment:
+  module: env
+  class: EmailTriageEnv
+  
+  # OpenEnv Interface Methods
+  interface:
+    step:
+      description: "Execute an action and return (observation, reward, done, info)"
+      signature: "step(action: Action) -> Tuple[Observation, Reward, bool, Dict]"
+    reset:
+      description: "Reset environment to initial state"
+      signature: "reset(seed: Optional[int] = None) -> Observation"
+    state:
+      description: "Return complete internal state"
+      signature: "state() -> EnvironmentState"
+  
+  # Observation Space Definition
+  observation_space:
+    type: object
+    model: env.models.Observation
+    description: |
+      Contains the current email being processed, inbox state metrics,
+      and available actions. The observation provides all information
+      needed for the agent to make decisions.
+    fields:
+      current_email:
+        type: Email
+        description: "Current email object with sender, subject, body, metadata"
+      inbox_state:
+        type: InboxState
+        description: "Aggregate counts: total, unread, uncategorized, flagged"
+      emails_processed:
+        type: int
+        description: "Number of emails already processed this episode"
+      emails_remaining:
+        type: int
+        description: "Number of emails left to process"
+      step_count:
+        type: int
+        description: "Current step number in episode"
+      max_steps:
+        type: int
+        description: "Maximum steps allowed for this task"
+      task_description:
+        type: str
+        description: "Human-readable task instructions"
+      available_actions:
+        type: "List[ActionType]"
+        description: "Valid actions for current state"
+
+  # Action Space Definition
+  action_space:
+    type: object
+    model: env.models.Action
+    description: |
+      Actions the agent can take on emails. Each action type may require
+      additional fields to be valid.
+    fields:
+      action_type:
+        type: ActionType
+        required: true
+        enum: [categorize, set_priority, archive, delete, reply, forward, flag, mark_read, skip]
+      category:
+        type: EmailCategory
+        required_for: [categorize]
+        enum: [work, personal, spam, newsletter, support, billing]
+      priority:
+        type: EmailPriority
+        required_for: [set_priority]
+        enum: [urgent, high, normal, low]
+      reply_content:
+        type: str
+        required_for: [reply]
+        description: "Reply message content (>50 chars for full credit)"
+      forward_to:
+        type: str
+        required_for: [forward]
+        description: "Email address to forward to"
+      reasoning:
+        type: str
+        optional: true
+        description: "Agent's explanation (bonus reward if >20 chars)"
+
+  # Reward Space Definition
+  reward_space:
+    type: object
+    model: env.models.Reward
+    description: |
+      Dense reward signal providing step-by-step feedback.
+      Rewards are NOT binary - partial progress is rewarded.
+    range: [-1.0, 1.0]
+    fields:
+      immediate:
+        type: float
+        description: "Reward for current action"
+      cumulative:
+        type: float
+        description: "Total reward accumulated so far"
+      components:
+        type: "List[RewardComponent]"
+        description: "Detailed breakdown of reward sources"
+      breakdown:
+        type: dict
+        description: "Dict format of reward components"
+      feedback:
+        type: str
+        description: "Human-readable feedback string"
+
+# =============================================================================
+# TASK DEFINITIONS
+# =============================================================================
+
+tasks:
+  - id: easy_categorization
+    name: "Email Categorization Basics"
+    difficulty: easy
+    description: |
+      Categorize 5 simple emails into work, personal, or newsletter.
+      No spam, no urgent items. Clear success criteria.
+    num_emails: 5
+    max_steps: 20
+    success_threshold: 0.70
+    grading_weights:
+      categorization: 0.80
+      completion: 0.20
+    
+  - id: medium_triage
+    name: "Email Triage with Spam Detection"
+    difficulty: medium
+    description: |
+      Triage 10 emails with spam detection (~20%) and priority setting.
+      Multi-step reasoning required. Partial credit possible.
+    num_emails: 10
+    max_steps: 50
+    success_threshold: 0.65
+    grading_weights:
+      categorization: 0.30
+      spam_detection: 0.25
+      priority: 0.25
+      completion: 0.20
+    
+  - id: hard_inbox_zero
+    name: "Inbox Zero Challenge"
+    difficulty: hard
+    description: |
+      Process 20 emails efficiently including replies to urgent items.
+      Real-world complexity with ambiguous cases. Requires planning.
+    num_emails: 20
+    max_steps: 80
+    success_threshold: 0.75
+    grading_weights:
+      categorization: 0.25
+      spam_detection: 0.20
+      priority: 0.20
+      urgent_handling: 0.20
+      completion: 0.15
+
+# =============================================================================
+# GRADING SPECIFICATION
+# =============================================================================
+
+grading:
+  type: programmatic
+  module: env.tasks
+  class: TaskGrader
+  function: grade_episode
+  deterministic: true
+  score_range: [0.0, 1.0]
+  
+  criteria:
+    - name: categorization_accuracy
+      description: "Percentage of emails correctly categorized"
+      weight_range: [0.25, 0.80]
+    - name: spam_detection
+      description: "Percentage of spam correctly identified and deleted"
+      weight_range: [0.0, 0.25]
+    - name: priority_accuracy
+      description: "Percentage of emails with correct priority"
+      weight_range: [0.0, 0.25]
+    - name: urgent_handling
+      description: "Percentage of urgent emails flagged or replied to"
+      weight_range: [0.0, 0.20]
+    - name: completion_rate
+      description: "Percentage of emails fully processed"
+      weight_range: [0.15, 0.20]
+
+# =============================================================================
+# REWARD FUNCTION DESIGN
+# =============================================================================
+
+reward:
+  module: env.reward
+  class: RewardCalculator
+  design: dense
+  
+  positive_rewards:
+    correct_categorization: 0.30
+    correct_priority: 0.20
+    correct_urgent_priority: 0.35
+    spam_deleted: 0.40
+    urgent_flagged: 0.30
+    quality_reply: 0.40
+    basic_reply: 0.15
+    correct_archive: 0.10
+    reasoning_bonus: 0.05
+    
+  negative_rewards:
+    incorrect_categorization: -0.20
+    incorrect_priority: -0.15
+    missed_urgent: -0.40
+    deleted_non_spam: -0.50
+    archived_spam: -0.15
+    archived_urgent: -0.30
+    skip_penalty: -0.05
+    step_penalty: -0.01
+
+# =============================================================================
+# BASELINE CONFIGURATION
+# =============================================================================
+
+baseline:
+  script: scripts/run_baseline.py
+  model: gpt-4o-mini
+  seed: 42
+  deterministic: true
+  
+  expected_scores:
+    easy_categorization: 0.85
+    medium_triage: 0.72
+    hard_inbox_zero: 0.68
+    
+  requirements:
+    - OPENAI_API_KEY environment variable
+
+# =============================================================================
+# DEPLOYMENT
+# =============================================================================
+
+docker:
+  base_image: python:3.11-slim
+  port: 7860
+  health_check: /health
+  
+huggingface:
+  space_sdk: docker
+  pinned: false
+  hardware: cpu-basic

@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "email-triage-env"
+version = "1.0.0"
+description = "Email Triage OpenEnv Environment for training AI agents on email management tasks"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "v0", email = "v0@vercel.com"}
+]
+keywords = ["openenv", "ai", "agents", "email", "triage", "reinforcement-learning"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "pydantic>=2.0.0,<3.0.0",
+    "pyyaml>=6.0.0",
+]
+
+[project.optional-dependencies]
+web = [
+    "gradio>=4.0.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0",
+]
+inference = [
+    "openai>=1.0.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+all = [
+    "email-triage-env[web,inference,dev]",
+]
+
+[project.urls]
+Homepage = "https://huggingface.co/spaces/openenv/email-triage"
+Repository = "https://huggingface.co/spaces/openenv/email-triage"
+Documentation = "https://huggingface.co/spaces/openenv/email-triage"
+
+[project.scripts]
+email-triage-validate = "scripts.validate_env:main"
+email-triage-baseline = "scripts.baseline_inference:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["email_triage_env*"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = ["E", "F", "I", "N", "W"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+asyncio_mode = "auto"

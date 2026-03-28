@@ -1,0 +1,3 @@
+[console_scripts]
+email-triage-baseline = scripts.baseline_inference:main
+email-triage-validate = scripts.validate_env:main
