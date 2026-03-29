@@ -1,18 +1,7 @@
 #!/usr/bin/env python3
 """
-Main inference script for the Email Triage OpenEnv environment.
-This script is required for hackathon submission and must be placed in the root directory as `inference.py`.
-
-- Uses the OpenAI API client for LLM calls.
-- Reads API credentials and config from environment variables: API_BASE_URL, MODEL_NAME, HF_TOKEN.
-- Runs baseline inference on all tasks and outputs reproducible scores.
-
-Usage:
-    export API_BASE_URL=your_api_base_url
-    export MODEL_NAME=your_model_name
-    export HF_TOKEN=your_hf_token
-    python inference.py
-
+Inference script for Email Triage environment.
+Runs baseline inference on all tasks.
 """
 import os
 import sys

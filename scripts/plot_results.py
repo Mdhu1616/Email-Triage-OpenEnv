@@ -1,6 +1,5 @@
 """
-Plotting script for EmailTriage OpenEnv benchmark results.
-Generates leaderboard tables and reward trajectory plots.
+Plotting script for Email Triage results.
 """
 import json
 import matplotlib.pyplot as plt

@@ -1,7 +1,5 @@
 """
-FastAPI server for EmailTriage OpenEnv
-Exposes endpoints for /reset, /step, /state, /health
-Includes Swagger docs for easy API exploration
+FastAPI server for Email Triage environment.
 """
 from fastapi import FastAPI, Body
 from pydantic import BaseModel
@@ -9,7 +7,7 @@ from typing import Optional, Dict, Any
 from env.environment import EmailTriageEnv
 from env.models import Action
 
-app = FastAPI(title="EmailTriage OpenEnv API", version="1.0")
+app = FastAPI(title="EmailTriage API", version="1.0")
 
 # In-memory envs by session (for demo; production: use DB or session manager)
 envs: Dict[str, EmailTriageEnv] = {}

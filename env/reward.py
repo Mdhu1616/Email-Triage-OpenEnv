@@ -1,7 +1,6 @@
 
 """
-Advanced Reward function for Email Triage OpenEnv.
-Multi-component, research-grade, and hackathon-ready.
+Reward function for Email Triage.
 """
 
 from typing import Dict, Any, Optional, Tuple, List

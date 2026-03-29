@@ -1,6 +1,5 @@
 """
-CLI for EmailTriage OpenEnv
-Supports: reset, step, state, run-episode, config file, env vars
+CLI for Email Triage environment.
 """
 import argparse
 import json
@@ -9,7 +8,7 @@ from env.environment import EmailTriageEnv
 from env.models import Action
 
 def main():
-    parser = argparse.ArgumentParser(description="EmailTriage OpenEnv CLI")
+    parser = argparse.ArgumentParser(description="EmailTriage CLI")
     parser.add_argument("--task", type=str, default="easy_categorization", help="Task ID (easy_categorization, medium_triage, hard_inbox_zero)")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--config", type=str, help="Path to config file (optional)")

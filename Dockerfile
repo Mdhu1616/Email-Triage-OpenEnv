@@ -7,7 +7,6 @@
 # Hugging Face Spaces-optimized Dockerfile
 FROM python:3.11-slim
 
-LABEL maintainer="openenv"
 LABEL version="1.0.0"
 LABEL description="Email Triage OpenEnv Environment"
 

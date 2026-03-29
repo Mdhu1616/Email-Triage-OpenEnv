@@ -1,23 +1,42 @@
 """
-Email Triage OpenEnv Environment
+Email Triage Environment.
+"""
 
-A real-world simulation environment for training AI agents on email management tasks.
-Implements the OpenEnv specification with typed models, programmatic graders, and
-reproducible baselines.
+from .environment import EmailTriageEnv
+from .models import (
+    Action,
+    ActionType,
+    Email,
+    EmailCategory,
+    EmailPriority,
+    Observation,
+    Reward,
+    EnvironmentState,
+    InboxState,
+    TaskConfig,
+)
+from .tasks import get_task_config, get_all_tasks, grade_episode
+from .email_generator import generate_task_emails
+from .reward import RewardCalculator
 
-OpenEnv Interface:
-    - step(action) -> (observation, reward, done, info)
-    - reset() -> observation  
-    - state() -> current_state
-
-Example:
-    >>> from env import EmailTriageEnv, Action, ActionType, EmailCategory
-    >>> 
-    >>> # Create environment
-    >>> env = EmailTriageEnv(task_id="easy_categorization")
-    >>> 
-    >>> # Reset to get initial observation
-    >>> obs = env.reset(seed=42)
+__all__ = [
+    "EmailTriageEnv",
+    "Action",
+    "ActionType",
+    "Email",
+    "EmailCategory",
+    "EmailPriority",
+    "Observation",
+    "Reward",
+    "EnvironmentState",
+    "InboxState",
+    "TaskConfig",
+    "get_task_config",
+    "get_all_tasks",
+    "grade_episode",
+    "generate_task_emails",
+    "RewardCalculator",
+]
     >>> 
     >>> # Take an action
     >>> action = Action(

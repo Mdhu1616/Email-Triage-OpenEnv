@@ -1,7 +1,5 @@
 """
-Task definitions and graders for the Email Triage environment.
-Defines EXACTLY 3 tasks with increasing difficulty: easy, medium, and hard.
-Each task has programmatic graders producing scores from 0.0 to 1.0.
+Task definitions for the Email Triage environment.
 """
 
 from typing import Dict

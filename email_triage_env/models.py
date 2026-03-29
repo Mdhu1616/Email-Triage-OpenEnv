@@ -1,6 +1,5 @@
 """
-Pydantic models for the Email Triage OpenEnv environment.
-Defines typed Observation, Action, and Reward models.
+Pydantic models for the Email Triage environment.
 """
 
 from enum import Enum

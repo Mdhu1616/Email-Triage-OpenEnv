@@ -1,12 +1,12 @@
 """
-Structured logging and debug utilities for EmailTriage OpenEnv
+Logging utilities for Email Triage.
 """
 import logging
 import json
 from typing import Any, Dict
 
 class StructuredLogger:
-    def __init__(self, name: str = "openenv", debug: bool = False):
+    def __init__(self, name: str = "email_triage", debug: bool = False):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.DEBUG if debug else logging.INFO)
         handler = logging.StreamHandler()

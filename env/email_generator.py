@@ -1,12 +1,5 @@
 """
 Generates realistic email data for the Email Triage environment.
-Creates diverse emails with ground truth labels for grading.
-
-Email Generation Strategy:
-- Diverse templates covering all categories
-- Realistic sender names and addresses
-- Ground truth labels for programmatic grading
-- Seeded randomness for reproducibility
 """
 
 import random

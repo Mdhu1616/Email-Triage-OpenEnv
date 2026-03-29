@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 """
-Validation script for the Email Triage OpenEnv environment.
-Tests that the environment conforms to the OpenEnv specification.
-
-Usage:
-    python scripts/validate_env.py
+Validation script for the Email Triage environment.
 """
 
 import os

@@ -1,6 +1,5 @@
 """
-Gradio web interface for the Email Triage OpenEnv environment.
-Deployed as a Hugging Face Space with the 'openenv' tag.
+Gradio interface for Email Triage environment.
 """
 
 import json
