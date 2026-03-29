@@ -1,14 +1,6 @@
 #!/usr/bin/env python3
 """
-Baseline inference script for the Email Triage OpenEnv environment.
-Uses the OpenAI API to run a model against all tasks and produce reproducible scores.
-
-Usage:
-    export OPENAI_API_KEY=your_key_here
-    python scripts/baseline_inference.py
-
-Or with specific options:
-    python scripts/baseline_inference.py --model gpt-4o-mini --seed 42 --task easy_categorization
+Baseline inference script for Email Triage.
 """
 
 import os

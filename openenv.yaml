@@ -14,10 +14,6 @@ description: |
   - Benchmarking agent decision-making capabilities
   - Evaluating multi-step reasoning and efficiency
 
-author: OpenEnv
-license: MIT
-repository: https://huggingface.co/spaces/openenv/email-triage
-
 tags:
   - openenv
   - email

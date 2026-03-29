@@ -1,6 +1,5 @@
 """
-Core Email Triage Environment implementing the OpenEnv interface.
-Provides step(), reset(), and state() methods for agent interaction.
+Core Email Triage Environment.
 """
 
 from typing import Tuple, Dict, Any, Optional

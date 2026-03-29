@@ -1,11 +1,5 @@
 # Email Triage OpenEnv
 
-![Hugging Face Spaces](https://img.shields.io/badge/Spaces-OpenEnv-blue?logo=huggingface)
-![OpenEnv Spec](https://img.shields.io/badge/OpenEnv-v1.0-brightgreen)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-
-
-
 A production-grade, research-grade OpenEnv environment for training and benchmarking AI agents on real-world email management tasks. Implements the full [OpenEnv specification](https://github.com/openenv) with typed Pydantic models, programmatic graders, multi-component rewards, edge cases, and reproducible baseline scores.
 
 
@@ -58,10 +52,6 @@ This environment is an ideal testbed for training and evaluating next-generation
 ### Installation
 
 ```bash
-# Clone the repository
-git clone https://huggingface.co/spaces/openenv/email-triage
-cd email-triage
-
 # Install dependencies
 pip install -r requirements.txt
 ```
@@ -303,6 +293,15 @@ result = grade_episode(task_id, env.state())
         "spam_detection": 0.8000,
         "priority_accuracy": 0.8500,
         "completion_rate": 1.0000
+    # Hugging Face Spaces configuration
+    ---
+    title: InboxAgent-OpenEnv
+    emoji: "📧"
+    colorFrom: blue
+    colorTo: green
+    sdk: docker
+    pinned: false
+    ---
     },
     "metrics": {
         "correct_categorizations": 9,
@@ -377,14 +376,12 @@ python scripts/plot_results.py --input baseline_leaderboard.json
 # Build
 docker build -t email-triage-env .
 
-# Run
 docker run -p 7860:7860 email-triage-env
 
 # Access at http://localhost:7860
 ```
 
 
-## Hugging Face Spaces Deployment
 
 1. Create a new Space with Docker SDK
 2. Upload all files
@@ -452,20 +449,6 @@ This checks:
 - openai (for baseline script)
 - gradio (for web interface)
 
-
----
-*This project is production-grade, research-grade, and hackathon-winning quality. Built for OpenEnv and Hugging Face Spaces.*
-
-MIT License
-
-## Contributing
-
-Contributions welcome! Please ensure:
-
-1. All tests pass: `python scripts/validate_env.py`
-2. Baseline scores remain reproducible with seed=42
-3. New tasks include programmatic graders
-4. Reward signals are dense, not binary
 
 ## Inference Script for Submission
 
