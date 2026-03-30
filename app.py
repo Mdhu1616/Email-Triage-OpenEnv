@@ -247,10 +247,7 @@ def create_interface():
     tasks = get_all_tasks()
     task_choices = list(tasks.keys())
     
-    with gr.Blocks(
-        title="Email Triage OpenEnv",
-        theme=gr.themes.Soft(),
-    ) as demo:
+    with gr.Blocks() as demo:
         
         gr.Markdown("""
 # Email Triage OpenEnv Environment
@@ -415,5 +412,6 @@ if __name__ == "__main__":
     demo.launch(
         server_name="0.0.0.0",
         server_port=7860,
-        share=False
+        share=False,
+        theme=gr.themes.Soft()
     )

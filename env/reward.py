@@ -4,8 +4,41 @@ Reward function for Email Triage.
 """
 
 from typing import Dict, Any, Optional, Tuple, List
-from .models import Action, ActionType, Email, EmailCategory, EmailPriority
-
+from .models import (
+    Action,
+    ActionType,
+    Email,
+    EmailCategory,
+    EmailPriority,
+    RewardComponent
+)
+REWARD_CONFIG = {
+    "correct_categorization": 0.3,
+    "incorrect_categorization": -0.2,
+    "correct_priority": 0.2,
+    "correct_urgent_priority": 0.4,
+    "incorrect_priority": -0.2,
+    "missed_urgent": -0.5,
+    "spam_deleted": 0.3,
+    "deleted_non_spam": -0.6,
+    "archived_urgent": -0.4,
+    "archived_spam": -0.2,
+    "correct_archive": 0.1,
+    "urgent_flagged": 0.2,
+    "quality_reply": 0.4,
+    "basic_reply": 0.2,
+    "unnecessary_reply": -0.2,
+    "forward_correct": 0.2,
+    "invalid_action": -0.3,
+    "mark_read": 0.05,
+    "skip_penalty": -0.05,
+    "step_penalty": -0.01,
+    "reasoning_bonus": 0.05,
+    "no_email": -0.1,
+    "task_completion_bonus": 1.0,
+    "perfect_categorization_bonus": 0.5,
+    "perfect_spam_detection_bonus": 0.5,
+}
 class RewardBreakdown:
     def __init__(
         self,
@@ -157,7 +190,6 @@ class RewardCalculator:
             reward, feedback, comp = self._reward_flag(requires_urgent)
             components.extend(comp)
             feedback_parts.append(feedback)
-        
         elif action.action_type == ActionType.REPLY:
             reward, feedback, comp = self._reward_reply(
                 action, requires_response
