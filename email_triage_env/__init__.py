@@ -34,20 +34,6 @@ __all__ = [
     "get_task_config",
     "generate_task_emails",
 ]
-        reasoning="This email is from a colleague about a project"
-    )
-    obs, reward, done, info = env.step(action)
-    
-    # Get current state
-    state = env.state()
-    
-    # Grade performance
-    from email_triage_env import grade_episode
-    result = grade_episode("easy_categorization", state)
-    print(f"Score: {result['score']}")
-"""
-
-from .models import (
     Email,
     EmailCategory,
     EmailPriority,

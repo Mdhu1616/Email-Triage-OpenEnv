@@ -5,7 +5,13 @@ Pydantic models for the Email Triage environment.
 from enum import Enum
 from typing import Optional, List
 from pydantic import BaseModel, Field, ConfigDict
+from dataclasses import dataclass
 
+@dataclass
+class RewardComponent:
+    name: str
+    value: float
+    description: str
 
 class EmailPriority(str, Enum):
     """Priority levels for emails."""
