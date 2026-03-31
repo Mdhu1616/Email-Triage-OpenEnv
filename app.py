@@ -6,7 +6,7 @@ import json
 import gradio as gr
 from typing import Optional, Tuple, List
 
-from env import (
+from email_triage_env import (
     EmailTriageEnv,
     Action,
     ActionType,
