@@ -30,7 +30,10 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy application code
 # COPY env/ ./env/
-COPY scripts/ ./scripts/
+# Remove or comment out lines for missing folders
+# COPY env/ ./env/   # <-- REMOVE THIS LINE
+
+COPY scripts/ ./scripts/   # <-- Only keep if scripts/ exists and is needed
 COPY openenv.yaml .
 COPY app.py .
 COPY api_server.py .
