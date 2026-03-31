@@ -1,3 +1,12 @@
+---
+title: Inbox Agent OpenEnv
+emoji: 🤖
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_file: app.py
+pinned: false
+---
 # Email Triage OpenEnv
 
 A production-grade, research-grade OpenEnv environment for training and benchmarking AI agents on real-world email management tasks. Implements the full [OpenEnv specification](https://github.com/openenv) with typed Pydantic models, programmatic graders, multi-component rewards, edge cases, and reproducible baseline scores.
