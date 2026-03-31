@@ -42,6 +42,7 @@ class ActionType(str, Enum):
     FLAG = "flag"
     MARK_READ = "mark_read"
     SKIP = "skip"
+    REPORT_PHISHING = "report_phishing"  # New action for phishing detection
 
 
 class Email(BaseModel):
@@ -64,6 +65,7 @@ class Email(BaseModel):
     _true_category: Optional[EmailCategory] = None
     _true_priority: Optional[EmailPriority] = None
     _is_spam: bool = False
+    _is_phishing: bool = False  # New field for phishing ground truth
     _requires_urgent_action: bool = False
 
 
