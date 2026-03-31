@@ -1,3 +1,49 @@
+# PHISHING DETECTION TASK (for new feature demonstration)
+from .email_generator import generate_phishing_email
+
+TASKS["phishing_detection"] = TaskConfig(
+    task_id="phishing_detection",
+    name="Phishing Detection Challenge",
+    description="""
+TASK: Identify and report phishing emails in a batch of 8 emails.
+
+OBJECTIVE:
+You will receive 8 emails, including 2 highly realistic phishing attempts.
+Your goal is to correctly report phishing emails using the REPORT_PHISHING action, while avoiding false positives.
+
+HIDDEN EDGE CASES:
+- 1 phishing email mimics a real sender from your company.
+- 1 legitimate email has a suspicious subject but is not phishing.
+
+REQUIRED ACTIONS:
+1. Use REPORT_PHISHING for phishing emails
+2. CATEGORIZE and ARCHIVE legitimate emails
+
+SUCCESS CRITERIA:
+- Correctly report both phishing emails
+- No more than 1 false positive
+- Process all emails within 20 steps
+
+SCORING:
+- Phishing detection: 60% weight
+- False positive avoidance: 20% weight
+- Completion rate: 20% weight
+    """,
+    difficulty="hard",
+    num_emails=8,
+    max_steps=20,
+    required_actions=[
+        ActionType.REPORT_PHISHING,
+        ActionType.CATEGORIZE,
+        ActionType.ARCHIVE,
+    ],
+    success_threshold=0.75,
+    grading_weights={
+        "phishing": 0.60,
+        "false_positive": 0.20,
+        "completion": 0.20,
+    },
+)
 """
 Task definitions for the Email Triage environment.
 """

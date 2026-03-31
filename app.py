@@ -5,7 +5,10 @@ Gradio interface for Email Triage environment.
 import json
 import gradio as gr
 from typing import Optional, Tuple, List
+import sys
+import os
 
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from email_triage_env import (
     EmailTriageEnv,
     Action,
@@ -151,48 +154,38 @@ def take_action(
         )
     
     try:
-        # Build action
-        action = Action(
-            action_type=ActionType(action_type),
-            category=EmailCategory(category) if category and category != "None" else None,
-            priority=EmailPriority(priority) if priority and priority != "None" else None,
-            reply_content=reply_content if reply_content else None,
-            reasoning=reasoning if reasoning else None,
-        )
-        
-        # Execute
-        obs, reward, done, info = env.step(action)
-        
-        # Update history
         state["history"].append({
             "step": len(state["history"]) + 1,
             "action": action_type,
             "reward": reward.immediate,
             "feedback": reward.feedback,
         })
-        
         # Format results
         obs_md = format_observation(obs)
         history_md = format_history(state["history"])
-        
+        # Phishing feedback highlight
+        phishing_feedback = ""
+        if action_type == "report_phishing":
+            if "phishing" in reward.breakdown or "phishing_reported" in reward.breakdown:
+                phishing_feedback = "\n**Phishing Detection:** 🛡️ " + reward.feedback
+            elif "false_phishing_report" in reward.breakdown:
+                phishing_feedback = "\n**Phishing Detection:** ⚠️ " + reward.feedback
         reward_md = f"""## Reward
 - **Immediate:** {reward.immediate:.3f}
 - **Cumulative:** {reward.cumulative:.3f}
 
 ### Feedback
-{reward.feedback}
+{reward.feedback}{phishing_feedback}
 
 ### Breakdown
 ```json
 {json.dumps(reward.breakdown, indent=2)}
 ```
 """
-        
         # Check if done
         if done:
             final_state = env.state()
             grading = grade_episode(state["task_id"], final_state)
-            
             status = "PASSED" if grading["passed"] else "FAILED"
             reward_md += f"""
 ---
@@ -210,7 +203,6 @@ def take_action(
 {json.dumps(grading['metrics'], indent=2)}
 ```
 """
-        
         return (
             obs_md,
             history_md,
@@ -218,7 +210,6 @@ def take_action(
             f"Action executed: {action_type}",
             state
         )
-        
     except Exception as e:
         return (
             format_observation(None),

@@ -92,6 +92,7 @@ class EmailTriageEnv:
                 "true_category": email._true_category,
                 "true_priority": email._true_priority,
                 "is_spam": email._is_spam,
+                "is_phishing": getattr(email, '_is_phishing', False),
                 "requires_urgent_action": email._requires_urgent_action,
             }
         
