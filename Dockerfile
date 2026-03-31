@@ -33,7 +33,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Remove or comment out lines for missing folders
 # COPY env/ ./env/   # <-- REMOVE THIS LINE
 
-COPY scripts/ ./scripts/   # <-- Only keep if scripts/ exists and is needed
 COPY openenv.yaml .
 COPY app.py .
 COPY api_server.py .
@@ -41,14 +40,10 @@ COPY cli.py .
 COPY logging_utils.py .
 
 # Health check endpoint for Spaces
-HEALTHCHECK CMD curl --fail http://localhost:7860/health || exit 1
-
 # Expose API port
 EXPOSE 7860
 
 # Default command: run FastAPI server (can be changed to Gradio if needed)
-CMD ["uvicorn", "api_server:app", "--host", "0.0.0.0", "--port", "7860"]
-
 # Health check endpoint
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:7860/health || exit 1
