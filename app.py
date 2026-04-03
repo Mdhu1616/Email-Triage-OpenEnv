@@ -159,6 +159,15 @@ def take_action(
         )
     
     try:
+        action = Action(
+            action_type=ActionType(action_type),
+            category=EmailCategory(category) if category else None,
+            priority=EmailPriority(priority) if priority else None,
+            reply_content=reply_content or None,
+            reasoning=reasoning or None,
+        )
+        obs, reward, done, info = env.step(action)
+        
         state["history"].append({
             "step": len(state["history"]) + 1,
             "action": action_type,
