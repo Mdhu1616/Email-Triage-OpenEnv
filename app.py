@@ -450,13 +450,15 @@ def register_openenv_routes(app):
         return {"status": "healthy"}
 
 
-if __name__ == "__main__":
+def create_app():
     demo = create_interface()
-
     api_app = FastAPI()
     register_openenv_routes(api_app)
-
     api_app.mount("/", demo.app)
+    return api_app
 
-    uvicorn.run(api_app, host="0.0.0.0", port=7860)
+
+if __name__ == "__main__":
+    app = create_app()
+    uvicorn.run(app, host="0.0.0.0", port=7860)
 
