@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "timestamp": "2026-03-31T17:03:11.763477",
+    "openenv_version": "1.0.0"
+  },
+  "summary": {
+    "passed": 7,
+    "failed": 1,
+    "warnings": 0,
+    "total": 8,
+    "success_rate": 0.875
+  },
+  "passed": [
+    "Dockerfile - contains required elements",
+    "Baseline reproduction - script structure valid",
+    "Tasks and graders - easy_categorization valid",
+    "Tasks and graders - medium_triage valid",
+    "Tasks and graders - hard_inbox_zero valid",
+    "Tasks and graders - phishing_detection valid",
+    "HF Space deployment - directory structure valid"
+  ],
+  "failed": [
+    "OpenEnv compliance - invalid observation format"
+  ],
+  "warnings": []
+}

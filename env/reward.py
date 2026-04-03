@@ -204,7 +204,6 @@ class RewardCalculator:
             reward, feedback, comp = self._reward_forward(action)
             components.extend(comp)
             feedback_parts.append(feedback)
-                is_phishing = getattr(email, '_is_phishing', False)
         
         elif action.action_type == ActionType.MARK_READ:
             reward, feedback, comp = self._reward_mark_read()
@@ -213,6 +212,12 @@ class RewardCalculator:
         
         elif action.action_type == ActionType.SKIP:
             reward, feedback, comp = self._reward_skip()
+            components.extend(comp)
+            feedback_parts.append(feedback)
+        
+        elif action.action_type == ActionType.REPORT_PHISHING:
+            is_phishing = getattr(email, '_is_phishing', False)
+            reward, feedback, comp = self._reward_report_phishing(is_phishing)
             components.extend(comp)
             feedback_parts.append(feedback)
         
@@ -250,33 +255,10 @@ class RewardCalculator:
         return total_reward, " ".join(feedback_parts), breakdown, components
     
     def _no_email_reward(self) -> Tuple[float, str, Dict, List[RewardComponent]]:
-                elif action.action_type == ActionType.REPORT_PHISHING:
-                    reward, feedback, comp = self._reward_report_phishing(is_phishing)
-                    components.extend(comp)
-                    feedback_parts.append(feedback)
         """Reward when there's no email to process."""
         penalty = self.config["no_email"]
         return (
             penalty,
-                def _reward_report_phishing(self, is_phishing: bool):
-                    """Reward for reporting phishing emails."""
-                    components = []
-                    if is_phishing:
-                        reward = self.config["phishing_reported"]
-                        components.append(RewardComponent(
-                            name="phishing_reported",
-                            value=reward,
-                            description="Correctly reported phishing email"
-                        ))
-                        return reward, "Phishing email reported!", components
-                    else:
-                        penalty = self.config["false_phishing_report"]
-                        components.append(RewardComponent(
-                            name="false_phishing_report",
-                            value=penalty,
-                            description="Incorrectly reported non-phishing email"
-                        ))
-                        return penalty, "False positive: Not a phishing email.", components
             "No email to process.",
             {"no_email": penalty},
             [RewardComponent(
@@ -588,6 +570,26 @@ class RewardCalculator:
                 description="Action type not recognized"
             )]
         )
+    
+    def _reward_report_phishing(self, is_phishing: bool) -> Tuple[float, str, List[RewardComponent]]:
+        """Reward for reporting phishing emails."""
+        components = []
+        if is_phishing:
+            reward = self.config["phishing_reported"]
+            components.append(RewardComponent(
+                name="phishing_reported",
+                value=reward,
+                description="Correctly reported phishing email"
+            ))
+            return reward, "Phishing email reported!", components
+        else:
+            penalty = self.config["false_phishing_report"]
+            components.append(RewardComponent(
+                name="false_phishing_report",
+                value=penalty,
+                description="Incorrectly reported non-phishing email"
+            ))
+            return penalty, "False positive: Not a phishing email.", components
     
     def calculate_completion_bonus(
         self,
