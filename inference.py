@@ -1,79 +1,98 @@
 #!/usr/bin/env python3
-"""
-Inference script for Email Triage environment.
-Runs baseline inference on all tasks.
-"""
+"""OpenEnv RL Challenge compliant inference script."""
 import os
-import sys
 import json
-import logging
-from typing import Dict, Any
-
-# Add parent directory to path for imports
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import sys
 
 try:
     from openai import OpenAI
 except ImportError:
-    print("Error: openai package not installed. Run: pip install openai")
+    print("Error: openai package is required. Run: pip install openai")
     sys.exit(1)
 
 from env import EmailTriageEnv, get_all_tasks, grade_episode
 
-API_BASE_URL = os.environ.get("API_BASE_URL")
-MODEL_NAME = os.environ.get("MODEL_NAME")
-HF_TOKEN = os.environ.get("HF_TOKEN")
+API_BASE_URL = os.getenv("API_BASE_URL", "https://api.openai.com/v1")
+MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4.1-mini")
+HF_TOKEN = os.getenv("HF_TOKEN")
 
-if not (API_BASE_URL and MODEL_NAME and HF_TOKEN):
-    print("Error: API_BASE_URL, MODEL_NAME, and HF_TOKEN must be set as environment variables.")
-    sys.exit(1)
+if HF_TOKEN is None or HF_TOKEN.strip() == "":
+    raise ValueError("HF_TOKEN environment variable is required")
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
 
-client = OpenAI(
-    base_url=API_BASE_URL,
-    api_key=HF_TOKEN,
-)
 
-def run_inference_on_task(task_id: str) -> Dict[str, Any]:
+def format_step_line(step: int, action: str, reward: float, done: bool, error: str | None):
+    error_value = error if error is not None else "null"
+    return f"[STEP] step={step} action={action} reward={reward:.2f} done={str(done).lower()} error={error_value}"
+
+
+def format_end_line(success: bool, steps: int, rewards: list[float]):
+    rewards_str = ",".join([f"{r:.2f}" for r in rewards])
+    return f"[END] success={str(success).lower()} steps={steps} rewards={rewards_str}"
+
+
+def run_inference():
+    tasks = get_all_tasks()
+    if not tasks:
+        raise RuntimeError("No tasks found")
+
+    task_id = list(tasks.keys())[0]
+    env_name = "email-triage"
+
     env = EmailTriageEnv(task_id=task_id)
-    obs = env.reset()
-    done = False
-    total_reward = 0.0
-    steps = 0
-    while not done:
-        # Compose prompt for LLM
-        prompt = f"""\nObservation: {json.dumps(obs)}\nWhat action should the agent take? Respond with a JSON action."""
-        response = client.chat.completions.create(
-            model=MODEL_NAME,
-            messages=[{"role": "system", "content": "You are an email triage agent."},
-                      {"role": "user", "content": prompt}],
-            max_tokens=256,
-        )
-        try:
-            action = json.loads(response.choices[0].message.content)
-        except Exception as e:
-            logger.error(f"Failed to parse LLM response: {e}")
-            break
-        obs, reward, done, info = env.step(action)
-        total_reward += reward.get("score", 0.0)
-        steps += 1
-        if steps > 100:
-            logger.warning("Max steps exceeded, breaking loop.")
-            break
-    score = grade_episode(env, task_id)
-    return {"task_id": task_id, "score": score, "steps": steps, "total_reward": total_reward}
+    obs = env.reset(seed=42)
 
-def main():
-    results = []
-    for task in get_all_tasks():
-        logger.info(f"Running inference on task: {task}")
-        result = run_inference_on_task(task)
-        results.append(result)
-    with open("inference_results.json", "w") as f:
-        json.dump(results, f, indent=2)
-    logger.info("Inference complete. Results saved to inference_results.json.")
+    print(f"[START] task={task_id} env={env_name} model={MODEL_NAME}")
+
+    done = False
+    step = 0
+    rewards = []
+    success = False
+
+    try:
+        while not done:
+            step += 1
+            prompt = f"Observation: {json.dumps(obs, default=str)}\nAction in JSON format, no extra text."
+            response = client.chat.completions.create(
+                model=MODEL_NAME,
+                messages=[
+                    {"role": "system", "content": "You are an email triage agent. Return action as JSON."},
+                    {"role": "user", "content": prompt},
+                ],
+                max_tokens=150,
+            )
+
+            content = response.choices[0].message.content.strip()
+            action_payload = None
+            action_text = "unknown"
+
+            try:
+                action_payload = json.loads(content)
+                action_text = json.dumps(action_payload, separators=(",", ":"), ensure_ascii=False)
+            except Exception as e:
+                print(format_step_line(step, action_text, 0.00, False, f"parse_error:{e}"))
+                break
+
+            try:
+                obs, reward, done, info = env.step(action_payload)
+            except Exception as e:
+                print(format_step_line(step, action_text, 0.00, True, str(e)))
+                break
+
+            rewards.append(float(reward))
+            print(format_step_line(step, action_text, float(reward), done, None))
+
+            if step >= tasks[task_id].max_steps:
+                break
+
+        grading = grade_episode(task_id, env.state())
+        success = bool(grading.get("passed", False))
+    except Exception:
+        success = False
+    finally:
+        print(format_end_line(success, step, rewards))
+
 
 if __name__ == "__main__":
-    main()
+    run_inference()
