@@ -1,12 +1,16 @@
 """
-Gradio interface for Email Triage environment.
+InboxAgent-OpenEnv: Gradio interface for intelligent email triage environment.
 """
 
 import json
 import gradio as gr
+from fastapi import Request
 from typing import Optional, Tuple, List
 import sys
 import os
+
+# OpenEnv session store for API endpoints
+OPENENV_SESSIONS = {}
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from email_triage_env import (
@@ -241,17 +245,16 @@ def create_interface():
     with gr.Blocks() as demo:
         
         gr.Markdown("""
-# Email Triage OpenEnv Environment
+    # InboxAgent-OpenEnv
 
-A real-world simulation for training AI agents on email management tasks.
-Implements the full [OpenEnv](https://github.com/openenv) specification.
+    Simulate and benchmark intelligent email management tasks.
 
-## Quick Start
-1. Select a task and click **Reset Environment**
-2. Read the current email observation
-3. Choose an action and fill in required fields
-4. Click **Take Action** to execute
-5. Repeat until the episode is complete
+    ## Quick Start
+    1. Select a task and click **Reset Environment**
+    2. Read the current email observation
+    3. Choose an action and fill in required fields
+    4. Click **Take Action** to execute
+    5. Repeat until the episode is complete
         """)
         
         # State
@@ -398,8 +401,57 @@ def health_check():
     return {"status": "healthy"}
 
 
+def register_openenv_routes(app):
+    @app.post("/openenv/reset")
+    async def openenv_reset(request: Request):
+        body = await request.json()
+        task_id = body.get("task_id")
+        seed = body.get("seed", 42)
+        session_id = body.get("session_id", "default")
+
+        if not task_id:
+            return {"error": "task_id is required"}
+
+        env = EmailTriageEnv(task_id=task_id)
+        env.reset(seed=seed)
+        OPENENV_SESSIONS[session_id] = env
+
+        state_obj = env.state()
+        if hasattr(state_obj, "model_dump"):
+            state_obj = state_obj.model_dump()
+
+        return {"task_id": task_id, "session_id": session_id, "observation": state_obj}
+
+    @app.post("/openenv/step")
+    async def openenv_step(request: Request):
+        body = await request.json()
+        session_id = body.get("session_id", "default")
+        action_data = body.get("action")
+
+        env = OPENENV_SESSIONS.get(session_id)
+        if env is None:
+            return {"error": "session not found"}
+
+        action = Action(**action_data)
+        obs, reward, done, info = env.step(action)
+
+        return {"observation": obs, "reward": reward, "done": done, "info": info}
+
+    @app.get("/openenv/state")
+    async def openenv_state(session_id: str = "default"):
+        env = OPENENV_SESSIONS.get(session_id)
+        if env is None:
+            return {"error": "session not found"}
+        return {"state": env.state()}
+
+    @app.get("/health")
+    async def openenv_health():
+        return {"status": "healthy"}
+
+
 if __name__ == "__main__":
     demo = create_interface()
+    register_openenv_routes(demo.app)
     demo.launch(
         server_name="0.0.0.0",
         server_port=7860,
