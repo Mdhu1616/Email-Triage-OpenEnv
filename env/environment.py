@@ -61,7 +61,11 @@ class EmailTriageEnv:
         self._reward_calculator = RewardCalculator()
         self._seed: Optional[int] = None
         
-    def reset(self, seed: Optional[int] = None) -> Observation:
+        # Expose models for external access
+        from . import models
+        self.models = models
+        
+    def reset(self, seed: Optional[int] = None) -> Dict[str, Any]:
         """
         Reset the environment to initial state.
         
@@ -120,7 +124,7 @@ class EmailTriageEnv:
         
         return self._get_observation()
     
-    def step(self, action: Action) -> Tuple[Observation, float, bool, Dict[str, Any]]:
+    def step(self, action: Action) -> Tuple[Dict[str, Any], float, bool, Dict[str, Any]]:
         """
         Execute an action and return the results.
         Now includes stochastic latency, incomplete info, rare events, and advanced reward.
@@ -212,7 +216,10 @@ class EmailTriageEnv:
 
     def _is_invalid_action(self, action, email) -> bool:
         """Return True if the action is invalid for the current state/email."""
-        return email and email.is_spam and action.action_type == ActionType.REPLY
+        if not email:
+            return False
+        is_spam = self._ground_truth.get(email.id, {}).get("is_spam", False)
+        return is_spam and action.action_type == ActionType.REPLY
 
     def _is_redundant_action(self, action) -> bool:
         """Return True if the action is a repeat of the previous action."""
@@ -222,7 +229,10 @@ class EmailTriageEnv:
 
     def _is_destructive_action(self, action, email) -> bool:
         """Return True if the action is destructive (e.g., deleting non-spam)."""
-        return email and not email.is_spam and action.action_type == ActionType.DELETE
+        if not email:
+            return False
+        is_spam = self._ground_truth.get(email.id, {}).get("is_spam", False)
+        return not is_spam and action.action_type == ActionType.DELETE
     
     def state(self) -> EnvironmentState:
         """
@@ -243,7 +253,7 @@ class EmailTriageEnv:
             raise RuntimeError("Environment not initialized. Call reset() first.")
         return copy.deepcopy(self._state)
     
-    def _get_observation(self) -> Observation:
+    def _get_observation(self) -> Dict[str, Any]:
         """Construct observation from current state."""
         current_email = self._get_current_email()
         
@@ -259,16 +269,16 @@ class EmailTriageEnv:
         # Determine available actions based on current email
         available_actions = self._get_available_actions(current_email)
         
-        return Observation(
-            current_email=current_email,
-            inbox_state=inbox_state,
-            emails_processed=self._state.current_email_index,
-            emails_remaining=len(emails) - self._state.current_email_index,
-            step_count=self._state.step_count,
-            max_steps=self._state.max_steps,
-            task_description=self.task_config.description,
-            available_actions=available_actions,
-        )
+        return {
+            "current_email": current_email,
+            "inbox_state": inbox_state,
+            "emails_processed": self._state.current_email_index,
+            "emails_remaining": len(emails) - self._state.current_email_index,
+            "step_count": self._state.step_count,
+            "max_steps": self._state.max_steps,
+            "task_description": self.task_config.description,
+            "available_actions": available_actions,
+        }
     
     def _get_current_email(self) -> Optional[Email]:
         """Get the current email being processed (without ground truth)."""

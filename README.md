@@ -426,25 +426,64 @@ email-triage-env/
 ```
 
 
-## Observability & Debugging
+## Hackathon Validation
 
-- Structured logging system (JSON + human-readable)
-- Debug mode for step-by-step trace
-- State diff viewer (before vs after action)
+This project is designed to pass all hackathon judging criteria. Run the validation scripts to ensure compliance:
 
-Validate your environment installation:
+### Phase 1: Automated Validation
+
+Run comprehensive Phase 1 checks:
 
 ```bash
-python scripts/validate_env.py
+python scripts/validate_phase1.py
 ```
 
-This checks:
-- Pydantic model definitions
-- OpenEnv interface compliance
-- Task configurations
-- Grader score ranges
-- Reward function signals
-- openenv.yaml structure
+This validates:
+- ✅ OpenEnv spec compliance (interface, models, grading)
+- ✅ Dockerfile builds (containerization, health checks)
+- ✅ Baseline reproduces (script structure, deterministic results)
+- ✅ 3+ tasks with graders (easy, medium, hard difficulties)
+- ✅ HF Space deploys (directory structure, app.py, requirements.txt)
+
+### Phase 2: Agentic Evaluation
+
+Run baseline with different LLMs:
+
+```bash
+# OpenAI baseline
+python scripts/run_baseline.py --model gpt-4o-mini
+
+# NVIDIA/Nemotron baseline (requires NVIDIA_API_KEY)
+python scripts/run_baseline.py --provider nvidia --model nemotron-3-super
+
+# Run on specific task
+python scripts/run_baseline.py --task easy_categorization --output results.json
+```
+
+Check score variance across multiple runs:
+
+```bash
+# Analyze variance (recommended: 20+ runs per task)
+python scripts/analyze_variance.py --runs 20 --output variance_analysis.json
+```
+
+This ensures:
+- ✅ Baseline agent re-run (deterministic, reproducible)
+- ✅ Standard Open LLM agent support (OpenAI, NVIDIA/Nemotron)
+- ✅ Score variance check (low variance = high reproducibility)
+
+### Validation Results
+
+All validation scripts output JSON results and provide clear pass/fail status. Fix any failed checks before submission.
+
+**Expected Phase 1 Results:**
+- All 5 checks: PASS
+- Success rate: 100%
+
+**Expected Phase 2 Results:**
+- Score variance: CV < 0.1 (low variance)
+- All tasks: reproducible scores
+- Multiple LLM providers: supported
 
 
 ## Clean Code & Structure

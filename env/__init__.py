@@ -3,9 +3,7 @@ Email Triage Environment.
 """
 
 # Version info
-__version__ = "1.0.0"
-__author__ = "OpenEnv"
-__license__ = "MIT"
+
 
 # Core environment
 from .environment import EmailTriageEnv
@@ -42,11 +40,7 @@ from .reward import (
 )
 
 # Email generation
-from .email_generator import (
-    generate_email,
-    generate_email_batch,
-    generate_task_emails,
-)
+from .email_generator import generate_task_emails
 
 __all__ = [
     "__version__",

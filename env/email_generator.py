@@ -1,43 +1,3 @@
-# Phishing email templates (for phishing detection task)
-PHISHING_EMAILS = [
-    {
-        "sender": ("security@bank-alerts.com", "Bank Security"),
-        "subject": "URGENT: Account Locked - Immediate Action Required",
-        "body": "Dear Customer,\n\nWe have detected suspicious activity on your account. Please verify your identity by clicking the link below:\n\nhttp://fake-bank-login.com\n\nFailure to do so will result in permanent account suspension.\n\nSincerely,\nBank Security Team",
-    },
-    {
-        "sender": ("it-admin@company-support.com", "IT Admin"),
-        "subject": "Password Expiry Notification",
-        "body": "Your password will expire in 24 hours. Please reset it immediately using the following link:\n\nhttp://malicious-reset.com\n\nIf you do not act, you will lose access to your account.",
-    },
-    {
-        "sender": ("hr@company.com", "HR Department"),
-        "subject": "Unusual Payroll Activity",
-        "body": "We noticed unusual activity in your payroll account. Please confirm your details here:\n\nhttp://phishing-hr.com\n\nContact HR if you have questions.",
-    },
-]
-def generate_phishing_email(hours_ago: int = 0) -> Email:
-    """Generate a realistic phishing email."""
-    template = random.choice(PHISHING_EMAILS)
-    sender_email, sender_name = template["sender"]
-    return Email(
-        id=str(uuid.uuid4()),
-        sender=sender_email,
-        sender_name=sender_name,
-        subject=template["subject"],
-        body=template["body"],
-        timestamp=generate_timestamp(hours_ago),
-        is_read=False,
-        is_flagged=False,
-        category=None,
-        priority=EmailPriority.HIGH,
-        requires_response=False,
-        _true_category=EmailCategory.WORK,  # Or another relevant category
-        _true_priority=EmailPriority.HIGH,
-        _is_spam=True,
-        _is_phishing=True,
-        _requires_urgent_action=False,
-    )
 """
 Generates realistic email data for the Email Triage environment.
 """
@@ -422,6 +382,46 @@ def generate_email_batch(
     
     return emails
 
+def generate_phishing_email(hours_ago: int = 0) -> Email:
+    """Generate a realistic phishing email."""
+    phishing_templates = [
+        {
+            "sender": ("security@bank-alerts.com", "Bank Security"),
+            "subject": "URGENT: Account Locked - Immediate Action Required",
+            "body": "Dear Customer,\n\nWe have detected suspicious activity on your account. Please verify your identity by clicking the link below:\n\nhttp://fake-bank-login.com\n\nFailure to do so will result in permanent account suspension.\n\nSincerely,\nBank Security Team",
+        },
+        {
+            "sender": ("it-admin@company-support.com", "IT Admin"),
+            "subject": "Password Expiry Notification",
+            "body": "Your password will expire in 24 hours. Please reset it immediately using the following link:\n\nhttp://malicious-reset.com\n\nIf you do not act, you will lose access to your account.",
+        },
+        {
+            "sender": ("hr@company.com", "HR Department"),
+            "subject": "Unusual Payroll Activity",
+            "body": "We noticed unusual activity in your payroll account. Please confirm your details here:\n\nhttp://phishing-hr.com\n\nContact HR if you have questions.",
+        },
+    ]
+    
+    template = random.choice(phishing_templates)
+    sender_email, sender_name = template["sender"]
+    return Email(
+        id=str(uuid.uuid4()),
+        sender=sender_email,
+        sender_name=sender_name,
+        subject=template["subject"],
+        body=template["body"],
+        timestamp=generate_timestamp(hours_ago),
+        is_read=False,
+        is_flagged=False,
+        category=None,
+        priority=EmailPriority.HIGH,
+        requires_response=False,
+        _true_category=EmailCategory.WORK,
+        _true_priority=EmailPriority.HIGH,
+        _is_spam=True,
+        _is_phishing=True,
+        _requires_urgent_action=False,
+    )
 
 def generate_task_emails(task_id: str, difficulty: str) -> List[Email]:
     """
