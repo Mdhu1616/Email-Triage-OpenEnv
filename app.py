@@ -4,10 +4,11 @@ InboxAgent-OpenEnv: Gradio interface for intelligent email triage environment.
 
 import json
 import gradio as gr
-from fastapi import Request
+from fastapi import FastAPI, Request
 from typing import Optional, Tuple, List
 import sys
 import os
+import uvicorn
 
 # OpenEnv session store for API endpoints
 OPENENV_SESSIONS = {}
@@ -451,10 +452,11 @@ def register_openenv_routes(app):
 
 if __name__ == "__main__":
     demo = create_interface()
-    register_openenv_routes(demo.app)
-    demo.launch(
-        server_name="0.0.0.0",
-        server_port=7860,
-        share=False,
-        theme=gr.themes.Soft()
-    )
+
+    api_app = FastAPI()
+    register_openenv_routes(api_app)
+
+    api_app.mount("/", demo.app)
+
+    uvicorn.run(api_app, host="0.0.0.0", port=7860)
+
