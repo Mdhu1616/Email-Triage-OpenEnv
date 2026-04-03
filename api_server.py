@@ -1,5 +1,5 @@
 """
-FastAPI server for Email Triage environment.
+FastAPI server for InboxAgent-OpenEnv.
 """
 from fastapi import FastAPI, Body
 from pydantic import BaseModel
@@ -7,7 +7,7 @@ from typing import Optional, Dict, Any
 from env.environment import EmailTriageEnv
 from env.models import Action
 
-app = FastAPI(title="EmailTriage API", version="1.0")
+app = FastAPI(title="InboxAgent-OpenEnv API", version="1.0")
 
 # In-memory envs by session (for demo; production: use DB or session manager)
 envs: Dict[str, EmailTriageEnv] = {}
@@ -45,6 +45,34 @@ def step(req: StepRequest):
 
 @app.get("/state")
 def state(session_id: str = "default"):
+    env = envs[session_id]
+    return {"state": env.state()}
+
+@app.post("/openenv/reset")
+def openenv_reset(req: ResetRequest):
+    env = EmailTriageEnv(task_id=req.task_id, seed=req.seed)
+    envs[req.session_id] = env
+    obs = env.reset(seed=req.seed)
+    return {
+        "task_id": req.task_id,
+        "session_id": req.session_id,
+        "observation": obs,
+    }
+
+@app.post("/openenv/step")
+def openenv_step(req: StepRequest):
+    env = envs[req.session_id]
+    action = Action(**req.action)
+    obs, reward, done, info = env.step(action)
+    return {
+        "observation": obs,
+        "reward": reward,
+        "done": done,
+        "info": info,
+    }
+
+@app.get("/openenv/state")
+def openenv_state(session_id: str = "default"):
     env = envs[session_id]
     return {"state": env.state()}
 
