@@ -3,7 +3,6 @@
 import os
 import json
 import sys
-
 try:
     from openai import OpenAI
 except ImportError:
@@ -15,7 +14,6 @@ from env import EmailTriageEnv, get_all_tasks, grade_episode
 API_BASE_URL = os.getenv("API_BASE_URL", "https://api.openai.com/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4.1-mini")
 HF_TOKEN = os.getenv("HF_TOKEN")
-
 if HF_TOKEN is None or HF_TOKEN.strip() == "":
     raise ValueError("HF_TOKEN environment variable is required")
 
@@ -95,4 +93,4 @@ def run_inference():
 
 
 if __name__ == "__main__":
-    run_inference()
+    print(run_inference("Hello from OpenEnv!"))
