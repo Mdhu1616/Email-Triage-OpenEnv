@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""OpenEnv RL Challenge compliant inference script."""
+"""Inference script for email triage system."""
 import os
 import json
 import sys
@@ -93,4 +93,4 @@ def run_inference():
 
 
 if __name__ == "__main__":
-    print(run_inference("Hello from OpenEnv!"))
+    print(run_inference("Test email triage system"))

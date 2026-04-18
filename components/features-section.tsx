@@ -11,7 +11,7 @@ const features = [
   },
   {
     title: "Step-Based API",
-    description: "Standard step(), reset(), and state() methods following the OpenEnv specification.",
+    description: "Standard step(), reset(), and state() methods for environment interaction.",
     icon: StepIcon,
   },
   {
@@ -37,10 +37,10 @@ export function FeaturesSection() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            OpenEnv Specification Compliant
+            Production-Ready Email Management
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Built from the ground up to meet every requirement of the OpenEnv standard.
+            Built with robust architecture and comprehensive tooling for email management.
           </p>
         </div>
 

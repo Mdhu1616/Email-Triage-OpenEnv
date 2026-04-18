@@ -1,5 +1,5 @@
 """
-InboxAgent-OpenEnv: Gradio interface for intelligent email triage environment.
+Gradio interface for email management and triage system.
 """
 
 import json
@@ -10,8 +10,8 @@ import sys
 import os
 import uvicorn
 
-# OpenEnv session store for API endpoints
-OPENENV_SESSIONS = {}
+# Session store for API endpoints
+SESSIONS = {}
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from email_triage_env import (
@@ -255,7 +255,7 @@ def create_interface():
     with gr.Blocks() as demo:
         
         gr.Markdown("""
-    # InboxAgent-OpenEnv
+    # Email management system
 
     Simulate and benchmark intelligent email management tasks.
 
@@ -400,7 +400,7 @@ print(f"Score: {result['score']}")
 ```
 
 ---
-*Tagged with `openenv` for the OpenEnv ecosystem*
+*Smart email categorization and management system*
         """)
     
     return demo
@@ -411,9 +411,9 @@ def health_check():
     return {"status": "healthy"}
 
 
-def register_openenv_routes(app):
-    @app.post("/openenv/reset")
-    async def openenv_reset(request: Request):
+def register_api_routes(app):
+    @app.post("/api/reset")
+    async def reset(request: Request):
         body = await request.json()
         task_id = body.get("task_id")
         seed = body.get("seed", 42)
@@ -424,7 +424,7 @@ def register_openenv_routes(app):
 
         env = EmailTriageEnv(task_id=task_id)
         env.reset(seed=seed)
-        OPENENV_SESSIONS[session_id] = env
+        SESSIONS[session_id] = env
 
         state_obj = env.state()
         if hasattr(state_obj, "model_dump"):
@@ -432,13 +432,13 @@ def register_openenv_routes(app):
 
         return {"task_id": task_id, "session_id": session_id, "observation": state_obj}
 
-    @app.post("/openenv/step")
-    async def openenv_step(request: Request):
+    @app.post("/api/step")
+    async def step(request: Request):
         body = await request.json()
         session_id = body.get("session_id", "default")
         action_data = body.get("action")
 
-        env = OPENENV_SESSIONS.get(session_id)
+        env = SESSIONS.get(session_id)
         if env is None:
             return {"error": "session not found"}
 
@@ -447,22 +447,22 @@ def register_openenv_routes(app):
 
         return {"observation": obs, "reward": reward, "done": done, "info": info}
 
-    @app.get("/openenv/state")
-    async def openenv_state(session_id: str = "default"):
-        env = OPENENV_SESSIONS.get(session_id)
+    @app.get("/api/state")
+    async def get_state(session_id: str = "default"):
+        env = SESSIONS.get(session_id)
         if env is None:
             return {"error": "session not found"}
         return {"state": env.state()}
 
     @app.get("/health")
-    async def openenv_health():
+    async def health():
         return {"status": "healthy"}
 
 
 def create_app():
     demo = create_interface()
     api_app = FastAPI()
-    register_openenv_routes(api_app)
+    register_api_routes(api_app)
     api_app.mount("/", demo.app)
     return api_app
 
