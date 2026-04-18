@@ -31,7 +31,7 @@ class EmailTriageEnv:
     - Identify and handle spam
     - Respond to emails that require action
     
-    Implements the OpenEnv interface:
+    Implements the standard interface:
     - step(action) -> (observation, reward, done, info)
     - reset() -> observation
     - state() -> current_state

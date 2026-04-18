@@ -1,27 +1,18 @@
-# OpenEnv Configuration File
-# Email Triage Environment v1.0.0
-# https://github.com/openenv/spec
+# Email Management System Configuration File
+# Version 1.0.0
 
 name: email-triage
 version: "1.0.0"
 description: |
-  Email Triage Environment - A real-world simulation for training AI agents
-  on email management tasks. Agents must categorize, prioritize, detect spam,
-  and respond to emails in a simulated inbox.
-  
-  This environment is designed for:
-  - Training LLMs on practical productivity tasks
-  - Benchmarking agent decision-making capabilities
-  - Evaluating multi-step reasoning and efficiency
+  Email management and classification system for intelligent inbox organization.
+  Provides tools for categorizing, prioritizing, and managing emails efficiently.
 
 tags:
-  - openenv
   - email
   - triage
   - nlp
   - classification
   - productivity
-  - agent-training
 
 # =============================================================================
 # ENVIRONMENT SPECIFICATION

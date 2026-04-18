@@ -1,16 +1,15 @@
-docker run -p 7860:7860 email-triage-env
-# Gmail Triage: Automatic Email Categorizer
+# Email Classifier & Organizer
 
-Automatically categorize your Gmail emails as easy,  medium , or  hard —so you never miss an important message again!
+A smart email management tool that automatically categorizes and organizes your Gmail inbox with intelligent prioritization.
 
 ---
 
 ## 🚀 Features
 
-- Fetches all emails from the last 24 hours (customizable)
-- Categorizes emails using smart logic (customizable)
-- Labels emails in Gmail as `easy`, `medium`, or `hard`
-- Works locally—your data stays private
+- Fetches and processes emails from your inbox
+- Smart categorization and prioritization system
+- Automatic email labeling and organization
+- Local processing—your data stays private
 
 ---
 
@@ -18,8 +17,8 @@ Automatically categorize your Gmail emails as easy,  medium , or  hard —so you
 
 1.  Clone this repository: 
    ```sh
-   git clone https://github.com/yourusername/gmail-triage.git
-   cd gmail-triage
+   git clone https://github.com/yourusername/your-project.git
+   cd your-project
    ```
 
 2.  Install dependencies: 
@@ -90,13 +89,7 @@ Automatically categorize your Gmail emails as easy,  medium , or  hard —so you
 
 ## 🙋 Need Help?
 
-Open an issue or contact the maintainer.
-
----
-
-## 📄 License
-
-MIT License
+Open an issue for support and questions.
 
 
 ## Developer Experience

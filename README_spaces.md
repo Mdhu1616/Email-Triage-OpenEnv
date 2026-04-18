@@ -1,20 +1,18 @@
-# EmailTriage OpenEnv — Hugging Face Space
+# Email Triage Manager — Hugging Face Space
 
-[![OpenEnv Spec](https://img.shields.io/badge/OpenEnv-v1.0-brightgreen)](https://github.com/openenv)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A production-grade, research-grade OpenEnv environment for benchmarking LLM agents on real-world email triage, categorization, and response generation.
+An intelligent email management system for real-world email triage, categorization, and organization.
 
 ---
 
 ## 🚀 Features
-- Multi-component, research-grade reward function
-- Realistic, stochastic simulation (latency, noise, edge cases)
-- Benchmark-quality tasks (easy, medium, hard) with adversarial/ambiguous scenarios
+- Smart email categorization and prioritization
+- Realistic simulation with edge cases
+- Multiple difficulty levels (easy, medium, hard)
 - FastAPI API and Gradio UI
-- Deterministic graders, leaderboard, and plotting
-- CLI, config, and environment variable support
-- Hugging Face Spaces-ready Dockerfile and health check
+- CLI and configuration support
+- Containerized deployment
 
 ---
 
@@ -33,11 +31,11 @@ A production-grade, research-grade OpenEnv environment for benchmarking LLM agen
 ---
 
 ## 🏆 Why This Matters
-- Real-world email triage is a critical productivity and safety challenge
-- Enables rigorous, reproducible benchmarking for next-gen AI agents
-- Built for OpenEnv and Hugging Face Spaces
+- Email management is a critical productivity challenge
+- Enables intelligent automation for next-gen applications
+- Built for Hugging Face Spaces
 
 ---
 
 ## 📝 Citation
-If you use this environment, please cite the OpenEnv project and this Space.
+Please cite this project if you use it in your work.

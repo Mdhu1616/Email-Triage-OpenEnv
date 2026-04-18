@@ -7,13 +7,13 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Email Triage OpenEnv | AI Agent Training Environment',
-  description: 'A reproducible environment for training and benchmarking AI agents on real-world email triage tasks. OpenEnv v1.0 specification compliant.',
+  title: 'Email Manager | Smart Email Organization',
+  description: 'Intelligent email management system for categorizing and organizing your inbox with automated prioritization.',
   generator: 'v0.app',
-  keywords: ['OpenEnv', 'AI', 'agent training', 'email triage', 'LLM', 'RLHF', 'benchmark'],
+  keywords: ['email', 'triage', 'organization', 'productivity', 'automation'],
   openGraph: {
-    title: 'Email Triage OpenEnv',
-    description: 'Train AI agents on real-world email tasks',
+    title: 'Email Manager',
+    description: 'Smart email organization and categorization system',
     type: 'website',
   },
   icons: {

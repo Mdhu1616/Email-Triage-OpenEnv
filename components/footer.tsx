@@ -11,11 +11,10 @@ export function Footer() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
                 <MailIcon className="h-4 w-4 text-accent-foreground" />
               </div>
-              <span className="text-lg font-semibold">Email Triage OpenEnv</span>
+              <span className="text-lg font-semibold">Email Manager</span>
             </div>
             <p className="mt-4 max-w-md text-sm text-muted-foreground leading-relaxed">
-              A reproducible environment for training and benchmarking AI agents on real-world 
-              email management tasks. Built to the OpenEnv specification.
+              An intelligent system for managing and organizing your emails with smart categorization and prioritization.
             </p>
           </div>
 
@@ -75,7 +74,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
           <p className="text-sm text-muted-foreground">
-            Built for the OpenEnv Hackathon
+            Intelligent email management system for productivity
           </p>
           <div className="flex items-center gap-6">
             <Link

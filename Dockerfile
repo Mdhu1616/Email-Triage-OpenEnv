@@ -1,14 +1,12 @@
-# =============================================================================
-# Email Triage OpenEnv Environment
+# Email Management System
 # Dockerfile for HuggingFace Spaces deployment
-# =============================================================================
 
 
 # Hugging Face Spaces-optimized Dockerfile
 FROM python:3.11-slim
 
 LABEL version="1.0.0"
-LABEL description="Email Triage OpenEnv Environment"
+LABEL description="Email Management and Classification System"
 
 # Environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
