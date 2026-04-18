@@ -1,0 +1,17 @@
+[33mcommit f6bbb9da870592e64b2ac9a019368dba6e4921f0[m[33m ([m[1;36mHEAD[m[33m)[m
+Author: Kommisetty Madhumitha <Mdhu1616@users.noreply.huggingface.co>
+Date:   Tue Mar 31 06:43:50 2026 +0000
+
+    Update README.md
+
+[33mcommit 83b7dc990f40b6f3019742679bc68edeea51db7d[m
+Author: Mdhu1616 <kommisettymadhumitha0303@gmail.com>
+Date:   Fri Apr 3 12:51:47 2026 +0530
+
+    fixed reset API + FastAPI integration
+
+[33mcommit 798482f27d98bfc62ab16d21c04730bcfc0bd4da[m
+Author: Mdhu1616 <kommisettymadhumitha0303@gmail.com>
+Date:   Fri Apr 3 12:36:14 2026 +0530
+
+    Fix root app.py to expose /openenv endpoint via mounted FastAPI app

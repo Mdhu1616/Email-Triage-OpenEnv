@@ -36,6 +36,13 @@ class EmailTriageEnv:
     - reset() -> observation
     - state() -> current_state
     """
+
+    def _get_partial_observation(self):
+        """Defensive: always return an Observation object, never a dict."""
+        obs = self._get_observation()
+        if isinstance(obs, dict):
+            obs = Observation(**obs)
+        return obs
     
     def __init__(self, task_id: str = "easy_categorization"):
         """
@@ -148,7 +155,11 @@ class EmailTriageEnv:
         # Get info dict
         info = self._get_info()
         
-        return self._get_observation(), reward, done, info
+        obs = self._get_observation()
+        # Defensive: if obs is a dict, convert to Observation
+        if isinstance(obs, dict):
+            obs = Observation(**obs)
+        return obs, reward, done, info
     
     def state(self) -> EnvironmentState:
         """

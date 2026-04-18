@@ -209,7 +209,8 @@ def validate_tasks(result: ValidationResult):
     if difficulties == {"easy", "medium", "hard"}:
         result.add_pass("Tasks cover easy, medium, hard difficulties")
     else:
-        result.add_warning(f"Missing difficulties: {{'easy', 'medium', 'hard'} - {difficulties}}")
+        missing = {'easy', 'medium', 'hard'} - difficulties
+        result.add_warning(f"Missing difficulties: {missing}")
 
 
 def validate_graders(result: ValidationResult):
@@ -221,16 +222,22 @@ def validate_graders(result: ValidationResult):
     for task_id in tasks:
         env = EmailTriageEnv(task_id=task_id)
         obs = env.reset(seed=42)
-        
+        if isinstance(obs, dict):
+            obs = Observation(**obs)
         # Take a few random actions
         for _ in range(5):
-            if obs.current_email is None:
+            if isinstance(obs, dict):
+                obs = Observation(**obs)
+            current_email = obs.current_email
+            if current_email is None:
                 break
             action = Action(
                 action_type=ActionType.ARCHIVE,
                 reasoning="Test"
             )
             obs, _, done, _ = env.step(action)
+            if isinstance(obs, dict):
+                obs = Observation(**obs)
             if done:
                 break
         
@@ -269,9 +276,13 @@ def validate_reward_function(result: ValidationResult):
     ]
     
     for action in test_actions:
+        if isinstance(obs, dict):
+            obs = Observation(**obs)
         if obs.current_email is None:
             break
         obs, reward, done, _ = env.step(action)
+        if isinstance(obs, dict):
+            obs = Observation(**obs)
         rewards.append(reward.immediate)
         if done:
             break

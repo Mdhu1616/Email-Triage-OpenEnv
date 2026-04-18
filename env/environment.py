@@ -65,7 +65,7 @@ class EmailTriageEnv:
         from . import models
         self.models = models
         
-    def reset(self, seed: Optional[int] = None) -> Dict[str, Any]:
+    def reset(self, seed: Optional[int] = None) -> Observation:
         """
         Reset the environment to initial state.
         
@@ -122,7 +122,11 @@ class EmailTriageEnv:
             quality_replies=0,
         )
         
-        return self._get_observation()
+        obs = self._get_observation()
+        # Defensive: ensure always Observation object
+        if isinstance(obs, dict):
+            obs = Observation(**obs)
+        return obs
     
     def step(self, action: Action) -> Tuple[Dict[str, Any], float, bool, Dict[str, Any]]:
         """
@@ -195,12 +199,24 @@ class EmailTriageEnv:
             "rare_event": rare_event,
         }
 
-        return obs, reward, done, info
+        # Always return a Reward object for compatibility with validation
+        reward_obj = Reward(
+            immediate=reward,
+            cumulative=self._state.cumulative_reward,
+            breakdown=reward_breakdown.as_dict() if hasattr(reward_breakdown, 'as_dict') else {},
+            feedback=""
+        )
+        # Defensive: ensure always Observation object
+        if isinstance(obs, dict):
+            obs = Observation(**obs)
+        return obs, reward_obj, done, info
 
     def _get_partial_observation(self):
-        """Return an observation with some fields hidden (simulate incomplete info)."""
+        """Return an observation with some fields hidden (simulate incomplete info). Always returns Observation object."""
         obs = self._get_observation()
-        if obs.current_email:
+        if isinstance(obs, dict):
+            obs = Observation(**obs)
+        if hasattr(obs, 'current_email') and obs.current_email:
             obs.current_email.body = "[REDACTED]"  # Example: hide email body
         return obs
 
