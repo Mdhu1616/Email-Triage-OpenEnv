@@ -9,6 +9,8 @@ next.user-config.*
 
 # Environment variables
 .env*.local
+credentials.json
+token.json
 
 # Common ignores
 node_modules
