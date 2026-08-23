@@ -13,7 +13,7 @@ export function Header() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
             <MailIcon className="h-4 w-4 text-accent-foreground" />
           </div>
-          <span className="text-lg font-semibold tracking-tight">OpenEnv</span>
+          <span className="text-lg font-semibold tracking-tight">Email Manager</span>
         </div>
 
         {/* Desktop Navigation */}

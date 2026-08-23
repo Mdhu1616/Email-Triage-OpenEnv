@@ -16,7 +16,7 @@ const features = [
   },
   {
     title: "Docker Ready",
-    description: "Pre-configured Dockerfile for containerized deployment and Hugging Face Spaces.",
+            description: "Pre-configured Dockerfile for containerized deployment.",
     icon: ContainerIcon,
   },
   {

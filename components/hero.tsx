@@ -27,12 +27,12 @@ export function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
             </span>
-            <span className="text-sm text-muted-foreground">OpenEnv v1.0 Spec Compliant</span>
+            <span className="text-sm text-muted-foreground">Email management ready</span>
           </div>
 
           {/* Headline */}
           <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-            <span className="text-balance">Train AI agents on</span>
+            <span className="text-balance">Automate real-world</span>
             <br />
             <span className="text-balance bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent">
               real-world email tasks
@@ -41,9 +41,8 @@ export function Hero() {
 
           {/* Subheadline */}
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            A reproducible environment for benchmarking LLM agents on email triage, 
-            categorization, and response generation. Fully typed, deterministically seeded, 
-            and ready for RLHF training.
+            A reproducible environment for benchmarking email triage workflows,
+            categorization, and response generation. Fully typed and deterministically seeded.
           </p>
 
           {/* CTA Buttons */}

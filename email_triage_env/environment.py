@@ -23,7 +23,7 @@ from .tasks import TASKS, get_task_config
 
 class EmailTriageEnv:
     """
-    Email Triage Environment for training AI agents on email management.
+    Email Triage Environment for testing email management workflows.
     
     This environment simulates a realistic email inbox where agents must:
     - Categorize emails correctly

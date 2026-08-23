@@ -25,7 +25,7 @@ from .reward import RewardCalculator
 
 class EmailTriageEnv:
     """
-    Email Triage Environment for training AI agents on email management.
+    Email Triage Environment for testing email management workflows.
     
     This environment simulates a realistic email inbox where agents must:
     - Categorize emails correctly
@@ -33,7 +33,6 @@ class EmailTriageEnv:
     - Identify and handle spam
     - Respond to emails that require action
     
-    Implements the OpenEnv interface:
     - step(action) -> (observation, reward, done, info)
     - reset() -> observation
     - state() -> current_state

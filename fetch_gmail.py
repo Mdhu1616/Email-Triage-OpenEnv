@@ -9,7 +9,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from tabulate import tabulate
 
-# ✅ Public-friendly scope
+# Public-friendly scope
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 CREDENTIALS_FILE = 'credentials.json'
@@ -92,7 +92,7 @@ def fetch_emails(service):
         if not next_page_token:
             break
 
-    print(f"\n📨 Found {len(messages)} emails\n")
+    print(f"\nFound {len(messages)} emails\n")
     return messages
 
 
@@ -124,30 +124,30 @@ def process_email(service, msg_id):
         return [sender, date, subject, category]
 
     except HttpError as error:
-        print(f"\n❌ Error: {error}")
+        print(f"\nError: {error}")
         return None
 
 
 # ================= MAIN =================
 def main():
     print("=" * 50)
-    print("📧 Gmail Triage - Email Categorizer")
+    print("Gmail Triage - Email Categorizer")
     print("=" * 50)
 
     if not os.path.exists(CREDENTIALS_FILE):
-        print("❌ credentials.json not found")
+        print("credentials.json not found")
         return
 
-    print("\n🔄 Connecting to Gmail...")
+    print("\nConnecting to Gmail...")
     service = get_gmail_service()
-    print("✅ Connected!\n")
+    print("Connected!\n")
 
-    print(f"📥 Fetching emails from last {LAST_N_HOURS} hours...\n")
+    print(f"Fetching emails from last {LAST_N_HOURS} hours...\n")
 
     messages = fetch_emails(service)
 
     if not messages:
-        print("❌ No emails found")
+        print("No emails found")
         return
 
     rows = []
@@ -156,8 +156,7 @@ def main():
     total = len(messages)
 
     for i, msg in enumerate(messages):
-        # ✅ SINGLE LINE PROGRESS
-        sys.stdout.write(f"\r🚀 Processing Emails: {i+1}/{total}")
+        sys.stdout.write(f"\rProcessing Emails: {i+1}/{total}")
         sys.stdout.flush()
 
         data = process_email(service, msg['id'])
@@ -169,19 +168,19 @@ def main():
     print()  # move to next line
 
     print("\n" + "=" * 50)
-    print("📊 EMAIL RESULTS")
+    print("EMAIL RESULTS")
     print("=" * 50)
 
     print(tabulate(rows, headers=["Sender", "Date", "Subject", "Category"]))
 
-    print("\n📊 SUMMARY")
+    print("\nSUMMARY")
     print("=" * 50)
-    print(f"🟢 Easy:   {counts['easy']}")
-    print(f"🟡 Medium: {counts['medium']}")
-    print(f"🔴 Hard:   {counts['hard']}")
+    print(f"Easy:   {counts['easy']}")
+    print(f"Medium: {counts['medium']}")
+    print(f"Hard:   {counts['hard']}")
     print(f"TOTAL:     {sum(counts.values())}")
 
-    print("\n✅ Done!")
+    print("\nDone!")
 
 
 if __name__ == "__main__":
