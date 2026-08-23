@@ -9,13 +9,13 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from tabulate import tabulate
 
-# Public-friendly scope
+# ✅ Public-friendly scope
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 CREDENTIALS_FILE = 'credentials.json'
 TOKEN_FILE = 'token.json'
 
-LAST_N_HOURS = 168
+LAST_N_HOURS = 48
 
 
 # ================= CATEGORIZATION =================
@@ -92,7 +92,7 @@ def fetch_emails(service):
         if not next_page_token:
             break
 
-    print(f"\n Found {len(messages)} emails\n")
+    print(f"\n📨 Found {len(messages)} emails\n")
     return messages
 
 
@@ -124,25 +124,25 @@ def process_email(service, msg_id):
         return [sender, date, subject, category]
 
     except HttpError as error:
-        print(f"\n Error: {error}")
+        print(f"\n❌ Error: {error}")
         return None
 
 
 # ================= MAIN =================
 def main():
     print("=" * 50)
-    print("Gmail Triage - Email Categorizer")
+    print("📧 Gmail Triage - Email Categorizer")
     print("=" * 50)
 
     if not os.path.exists(CREDENTIALS_FILE):
-        print("credentials.json not found")
+        print("❌ credentials.json not found")
         return
 
     print("\n🔄 Connecting to Gmail...")
     service = get_gmail_service()
-    print("Connected!\n")
+    print("✅ Connected!\n")
 
-    print(f"Fetching emails from last {LAST_N_HOURS} hours...\n")
+    print(f"📥 Fetching emails from last {LAST_N_HOURS} hours...\n")
 
     messages = fetch_emails(service)
 
@@ -169,12 +169,12 @@ def main():
     print()  # move to next line
 
     print("\n" + "=" * 50)
-    print("EMAIL RESULTS")
+    print("📊 EMAIL RESULTS")
     print("=" * 50)
 
     print(tabulate(rows, headers=["Sender", "Date", "Subject", "Category"]))
 
-    print("\n SUMMARY")
+    print("\n📊 SUMMARY")
     print("=" * 50)
     print(f"🟢 Easy:   {counts['easy']}")
     print(f"🟡 Medium: {counts['medium']}")
